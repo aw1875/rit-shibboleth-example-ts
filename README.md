@@ -30,5 +30,5 @@ Lastly, copy `.env.sample` to `.env` and edit appropriately. Running this app lo
 
 ```bash
 npm i
-npm run start
+npm start
 ```
