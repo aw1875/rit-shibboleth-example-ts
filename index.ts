@@ -121,9 +121,9 @@ app.use((err: any, req: any, res: any, next: any) => {
 });
 
 // Create Server
-const httpsServer = createServer(app);
+const httpServer = createServer(app);
 
 const port = process.env.PORT || 4006;
-httpsServer.listen(port, () => {
+httpServer.listen(port, () => {
     console.log(`Listening on port ${port}`);
 });
