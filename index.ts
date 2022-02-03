@@ -37,7 +37,7 @@ const samlStrategy = new Strategy(
         // Service Provider private key
         decryptionPvk: readFileSync(__dirname + "/cert/key.pem", "utf-8"),
 
-        // Service Provider certificate
+        // Service Provider private key
         privateKey: readFileSync(__dirname + "/cert/key.pem", "utf-8"),
 
         // Identity Provider certificate
