@@ -46,7 +46,7 @@ const samlStrategy = new Strategy(
     (profile: any, done: any) => {
         return done(
             null,
-            new User(profile.FirstName, profile.LastName, profile.Email)
+            new User(profile.FirstName, profile.LastName, profile.email)
         );
     }
 );
