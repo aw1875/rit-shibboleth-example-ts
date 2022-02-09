@@ -3,7 +3,7 @@
     "target": "es2015",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "module": "commonjs", 
+    "module": "commonjs",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
