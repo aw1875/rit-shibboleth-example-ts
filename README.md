@@ -37,7 +37,15 @@ This version of code will check if the signed in user is a student. To return th
 
 ```typescript
 (profile: any, done: any) => {
-    return done(null, new User(profile.FirstName, profile.LastName, profile.Email, profile["urn:oid:1.3.6.1.4.1.4447.1.41"].includes("Student")));
+  return done(
+    null,
+    new User(
+      profile.FirstName,
+      profile.LastName,
+      profile.Email,
+      profile["urn:oid:1.3.6.1.4.1.4447.1.41"].includes("Student")
+    )
+  );
 };
 ```
 

@@ -44,7 +44,15 @@ const samlStrategy = new Strategy(
     cert: readFileSync(__dirname + "/cert/idp_cert.pem", "utf-8"),
   },
   (profile: any, done: any) => {
-      return done(null, new User(profile.FirstName, profile.LastName, profile.Email, profile["urn:oid:1.3.6.1.4.1.4447.1.41"].includes("Student")));
+    return done(
+      null,
+      new User(
+        profile.FirstName,
+        profile.LastName,
+        profile.Email,
+        profile["urn:oid:1.3.6.1.4.1.4447.1.41"].includes("Student")
+      )
+    );
   }
 );
 
@@ -76,13 +84,16 @@ app.use(passport.session());
  * @param {NextFunction} next Express NextFunction
  * @returns {void}
  */
-const ensureAuthenticated = (req: Request, res: Response, next: NextFunction) => {
+const ensureAuthenticated = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   if (req.isAuthenticated()) {
     return next();
   }
   res.redirect("/login");
 };
-
 
 /**
  * Main Route
@@ -90,10 +101,10 @@ const ensureAuthenticated = (req: Request, res: Response, next: NextFunction) =>
  * @name GET /
  * @property {Request} req Express Request
  * @property {Response} res Express Response
- * @returns {void} 
+ * @returns {void}
  */
 app.get("/", ensureAuthenticated, (req: Request, res: Response): void => {
-    req.user && res.send(`Hello, ${req.user.FirstName} ${req.user.LastName}`);
+  req.user && res.send(`Hello, ${req.user.FirstName} ${req.user.LastName}`);
 });
 
 /**
@@ -158,7 +169,7 @@ app.get("/Shibboleth.sso/Metadata", (_, res: Response) => {
 
 /**
  * General Error Handler
- * 
+ *
  * @param {any} err Error to be displayed
  * @param {Request} _ Express Request
  * @param {Response} res Express Response
