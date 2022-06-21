@@ -29,24 +29,15 @@ Lastly, copy `.env.sample` to `.env` and edit appropriately. Running this app lo
 # Usage
 
 ```bash
-npm i
-npm start
+yarn install // npm install for npm
+yarn start   // npm start for npm
 ```
 
 This version of code will check if the signed in user is a student. To return the plain Profile object you can modify the code below:
 
 ```typescript
 (profile: any, done: any) => {
-  if (profile["urn:oid:1.3.6.1.4.1.4447.1.41"].includes("Student")) {
-    return done(
-      null,
-      new User(profile.FirstName, profile.LastName, profile.Email, true)
-    );
-  }
-  return done(
-    null,
-    new User(profile.FirstName, profile.LastName, profile.Email, false)
-  );
+    return done(null, new User(profile.FirstName, profile.LastName, profile.Email, profile["urn:oid:1.3.6.1.4.1.4447.1.41"].includes("Student")));
 };
 ```
 
