@@ -2,7 +2,7 @@ require("dotenv").config();
 
 import { createServer } from "http";
 import { readFileSync } from "fs";
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import bodyparser from "body-parser";
 import cookieParser from "cookie-parser";
 import session from "express-session";
@@ -44,16 +44,7 @@ const samlStrategy = new Strategy(
     cert: readFileSync(__dirname + "/cert/idp_cert.pem", "utf-8"),
   },
   (profile: any, done: any) => {
-    if (profile["urn:oid:1.3.6.1.4.1.4447.1.41"].includes("Student")) {
-      return done(
-        null,
-        new User(profile.FirstName, profile.LastName, profile.Email, true)
-      );
-    }
-    return done(
-      null,
-      new User(profile.FirstName, profile.LastName, profile.Email, false)
-    );
+      return done(null, new User(profile.FirstName, profile.LastName, profile.Email, profile["urn:oid:1.3.6.1.4.1.4447.1.41"].includes("Student")));
   }
 );
 
@@ -77,40 +68,83 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Ensure user is authenticated helper function
-const ensureAuthenticated = (req: any, res: any, next: any) => {
+/**
+ * Ensure the user is authenticated.
+ *
+ * @param {Request} req Express Request
+ * @param {Response} res Express Response
+ * @param {NextFunction} next Express NextFunction
+ * @returns {void}
+ */
+const ensureAuthenticated = (req: Request, res: Response, next: NextFunction) => {
   if (req.isAuthenticated()) {
     return next();
   }
   res.redirect("/login");
 };
 
-// Setup Routes
-app.get("/", ensureAuthenticated, (req: any, res: any) => {
-  res.send(`Hello, ${req.user.FirstName} ${req.user.LastName}`);
+
+/**
+ * Main Route
+ *
+ * @name GET /
+ * @property {Request} req Express Request
+ * @property {Response} res Express Response
+ * @returns {void} 
+ */
+app.get("/", ensureAuthenticated, (req: Request, res: Response): void => {
+    req.user && res.send(`Hello, ${req.user.FirstName} ${req.user.LastName}`);
 });
 
+/**
+ * Login Route
+ *
+ * @name GET /login
+ * @property {Response} res Express Response
+ * @returns {void}
+ */
 app.get(
   "/login",
   passport.authenticate("saml", { failureRedirect: "/login" }),
-  (_, res: any) => {
+  (_, res: Response) => {
     res.redirect("/");
   }
 );
 
+/**
+ * Login Callback Route
+ *
+ * @name GET /login/callback
+ * @property {Response} res Express Response
+ * @return {void}
+ */
 app.post(
   "/login/callback",
   passport.authenticate("saml", { failureRedirect: "/login" }),
-  (_, res: any) => {
+  (_, res: Response) => {
     res.redirect("/");
   }
 );
 
-app.get("/login/fail", (_, res: any) => {
+/**
+ * Login Failed Route
+ *
+ * @name GET /login/fail
+ * @property {Response} res Express Response
+ * @returns {void}
+ */
+app.get("/login/fail", (_, res: Response) => {
   res.status(401).send("Failed to authenticate");
 });
 
-app.get("/Shibboleth.sso/Metadata", (_, res: any) => {
+/**
+ * Shibboleth Metadata Route
+ *
+ * @name GET /Shibboleth.sso/Metadata
+ * @property {Response} res Express Response
+ * @returns {void}
+ */
+app.get("/Shibboleth.sso/Metadata", (_, res: Response) => {
   res.type("application/xml");
   res
     .status(200)
@@ -122,8 +156,16 @@ app.get("/Shibboleth.sso/Metadata", (_, res: any) => {
     );
 });
 
-// General Error Handler
-app.use((err: any, req: any, res: any, next: any) => {
+/**
+ * General Error Handler
+ * 
+ * @param {any} err Error to be displayed
+ * @param {Request} _ Express Request
+ * @param {Response} res Express Response
+ * @param {NextFunction} next Express NextFunction
+ * @returns {void}
+ */
+app.use((err: any, _: Request, res: Response, next: NextFunction) => {
   console.log(`Fatal Error: ${JSON.stringify(err)}`);
   next(err);
 });

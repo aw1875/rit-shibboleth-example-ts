@@ -9,5 +9,9 @@
     "strict": true,
     "strictPropertyInitialization": false,
     "skipLibCheck": true
+    "typeRoots": [
+        "@types",
+        "./node_modules/@types"
+    ]
   }
 }
