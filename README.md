@@ -29,8 +29,8 @@ Lastly, copy `.env.sample` to `.env` and edit appropriately. Running this app lo
 # Usage
 
 ```bash
-yarn install // npm install for npm
-yarn start   // npm start for npm
+yarn install    # npm install for npm
+yarn start      # npm start for npm
 ```
 
 This version of code will check if the signed in user is a student. To return the plain Profile object you can modify the code below:
